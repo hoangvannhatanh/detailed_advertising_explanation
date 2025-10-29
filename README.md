@@ -102,28 +102,26 @@ allprojects {
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Facebook -->
-    <string name="facebook_app_id" translatable="false">YOUR_FB_APP_ID</string>
-    <string name="facebook_client_token" translatable="false">YOUR_FB_CLIENT_TOKEN</string>
-    <string name="adjust_token" translatable="false">YOUR_ADJUST_TOKEN</string>
+    <string name="facebook_app_id">YOUR_FB_APP_ID</string>
+    <string name="facebook_client_token">YOUR_FB_CLIENT_TOKEN</string>
+    <string name="adjust_token">YOUR_ADJUST_TOKEN</string>
 
     <!-- Google AdMob -->
-    <string name="app_id" translatable="false">ca-app-pub-XXXXXXXX~XXXXXXXX</string>
-    
-    <!-- Test IDs (Development only) -->
-    <!-- <string name="app_id">ca-app-pub-3940256099942544~3347511713</string> -->
-    <!-- <string name="open_ads">ca-app-pub-3940256099942544/9257395921</string> -->
-    <!-- <string name="inter_splash">ca-app-pub-3940256099942544/1033173712</string> -->
-    <!-- <string name="native_all">ca-app-pub-3940256099942544/2247696110</string> -->
-    <!-- <string name="banner_all">ca-app-pub-3940256099942544/9214589741</string> -->
+    <string name="app_id">ca-app-pub-XXXXXXXX~XXXXXXXX</string>
 
     <!-- Real Ads IDs -->
-    <string name="open_ads" translatable="false">ca-app-pub-XXXXXXXX/XXXXXXXX</string>
-    <string name="inter_splash" translatable="false">ca-app-pub-XXXXXXXX/XXXXXXXX</string>
-    <string name="native_home" translatable="false">ca-app-pub-XXXXXXXX/XXXXXXXX</string>
-    <string name="banner_all" translatable="false">ca-app-pub-XXXXXXXX/XXXXXXXX</string>
-    <!-- Thêm các ad units khác... -->
+    <string name="open_ads">ca-app-pub-XXXXXXXX/XXXXXXXX</string>
+    <string name="inter_splash">ca-app-pub-XXXXXXXX/XXXXXXXX</string>
+    <string name="native_all">ca-app-pub-XXXXXXXX/XXXXXXXX</string>
+    <string name="banner_all">ca-app-pub-XXXXXXXX/XXXXXXXX</string>
 </resources>
 ```
+📖 **Giải thích:**
+- `ad_unit_ids`: **Lưu các mã ID quảng cáo thật hoặc test.**
+- `App Open`, `Interstitial`, `Native`, `Banner`: **Mỗi loại quảng cáo có một mã ID riêng biệt.**
+- `YOUR_FB_APP_ID`: **Thay bằng ID thật lấy từ Facebook Developer.**
+- `adjust_token`: **Mã token của Adjust dùng để theo dõi và đo lường hiệu quả quảng cáo (nếu sử dụng Adjust SDK).**
+
 
 ### BƯỚC 4: Tạo Application Class
 
@@ -148,6 +146,21 @@ class MyApplication : AdsApplication() {
     override fun getIntentOpenNotification() = Intent(this, SplashActivity::class.java)
 }
 ```
+📖 **Giải thích chi tiết:**
+- `Application`: **Báo cho hệ thống rằng đây là Application cấp cao nhất.**
+- `class MyApplication : AdsApplication()`: **Khai báo Application của bạn kế thừa từ `AdsApplication` (lớp nền của thư viện VTN Ads).**
+- `AdsApplication`: **Lớp nền của thư viện VTN Ads — khi kế thừa, bạn có thể `override` các hàm để tùy chỉnh hành vi quảng cáo.**
+- `onCreate()`: **Hàm khởi tạo chính của Application, nơi gọi các khởi tạo liên quan đến ads/remote config/firebase.**
+- `RemoteConfig.init(this)`: **Đọc file `ads_id.xml` và gán giá trị ID quảng cáo từ cấu hình remote/local.**
+- `AppOpenManager.getInstance().disableAppResumeWithActivity(SplashActivity::class.java)`: **Tạm tắt hiển thị App Open Ads cho `SplashActivity` (tránh hiển thị quảng cáo quá sớm khi app resume).**
+- `enableAdsResume()`: **Hàm override để bật/tắt tính năng App Open Ads khi app resume.**
+- `getResumeAdId()`: **Hàm override trả về ID quảng cáo dùng cho App Open Ads.**
+- `enableAdjustTracking()`: **Hàm override để bật/tắt theo dõi hiệu suất bằng Adjust (nếu sử dụng Adjust SDK).**
+- `getAdjustToken()`: **Hàm override trả về token Adjust (lấy từ `ads_id.xml`).**
+- `getKeyRemoteIntervalShowInterstitial()`: **Hàm override định nghĩa khoảng thời gian tối thiểu giữa hai lần hiển thị Interstitial Ads.**
+- `getListTestDeviceId()`: **Hàm override trả về danh sách thiết bị test (ở ví dụ này là `null`).**
+- `getIntentOpenNotification()`: **Hàm override trả về `Intent` được gọi khi người dùng mở app từ thông báo.**
+
 
 ### BƯỚC 5: Cấu hình Remote Config
 
@@ -175,6 +188,14 @@ public class RemoteConfig {
     }
 }
 ```
+📖 **Giải thích:**
+- `RemoteConfig`: **Lớp chứa các biến toàn cục điều khiển việc hiển thị quảng cáo.**
+- **Có 2 nhóm chính:**
+    - **Biến bật/tắt quảng cáo:** `is_load_inter_splash`, `is_load_native_home`, ...
+    - **ID quảng cáo:** `open_ads`, `inter_splash`, ... → lấy từ file `ads_id.xml`.
+- `interval_show_interstitial`: **Biến quy định khoảng cách (tính theo giây hoặc số lần) giữa 2 lần hiển thị quảng cáo Interstitial.**
+- `init(context)`: **Hàm đọc các chuỗi trong file `strings.xml` và gán giá trị tương ứng vào các biến trong RemoteConfig.**
+
 
 ### BƯỚC 6: Xin Consent (GDPR)
 
@@ -188,6 +209,13 @@ private fun processAdConsent() {
     }
 }
 ```
+📖 **Giải thích:**
+- `ConsentHelper`: **Hỗ trợ tuân thủ quy định GDPR của châu Âu.**
+- **Mục đích:** Người dùng cần đồng ý (*consent*) cho phép ứng dụng thu thập dữ liệu quảng cáo cá nhân hoá.
+- **Cơ chế hoạt động:**
+    - Khi người dùng bấm **“Allow”**, callback `{ loadAds() }` sẽ được gọi để tiếp tục tải quảng cáo.
+- **Ý nghĩa:** Bước này giúp ứng dụng hợp lệ khi phân phối quốc tế, đặc biệt tại khu vực **EU**.
+
 
 ---
 
@@ -204,6 +232,13 @@ AppOpenManager.getInstance().disableAppResumeWithActivity(MainActivity::class.ja
 // Bật lại trong Activity
 AppOpenManager.getInstance().enableAppResumeWithActivity(MainActivity::class.java)
 ```
+📖 **Giải thích:**
+- `AppOpenManager`: **Tự động quản lý và hiển thị quảng cáo khi ứng dụng được mở hoặc resume.**
+- **Cách sử dụng:**
+    - **Tắt** ở `MainActivity` để tránh hiển thị quảng cáo trong lúc khởi tạo ứng dụng.
+    - **Bật** lại ở `MainActivity` (màn hình chính) để quảng cáo hiển thị hợp lý khi người dùng quay lại app.
+
+
 
 ---
 
@@ -239,6 +274,9 @@ private fun showInterWithNative(nextAction: () -> Unit) {
     )
 }
 ```
+📖 **Giải thích:**
+- `loadAndShowInter()`: **Hàm vừa tải vừa hiển thị quảng cáo Interstitial.**
+- `nextAction()`: **Callback được gọi sau khi người dùng đóng quảng cáo — dùng để tiếp tục luồng xử lý, ví dụ như chuyển sang màn hình tiếp theo.**
 
 ---
 
@@ -274,6 +312,12 @@ private fun loadNativeAds() {
     )
 }
 ```
+📖 **Giải thích:**
+- **Mục đích:** Tạo `FrameLayout` để làm container chứa quảng cáo **Native Ads**.
+- **Khi load thành công:**
+    - Inflate layout `native_ads_layout`.
+    - Gắn quảng cáo vào `NativeAdView` thông qua hàm `pushAdsToViewCustom()`.
+- **Khi load thất bại:** Ẩn `container` để tránh chiếm không gian trống trong giao diện.
 
 **Preload Pattern (Tối ưu):**
 ```kotlin
@@ -294,6 +338,9 @@ AdsNativeConfig.loadNativeHome(this)
 // Show khi cần
 AdsNativeConfig.showNativeHome(this, binding.nativeAdsContainer)
 ```
+📖 **Giải thích:**
+- **Cơ chế preload:** Giúp quảng cáo được **tải sẵn trước**, nhờ đó có thể hiển thị **ngay lập tức** khi cần mà không phải chờ tải.
+- **Dạng Singleton:** Đảm bảo quảng cáo chỉ được **load một lần duy nhất** cho toàn bộ ứng dụng, tránh tải lại nhiều lần gây lãng phí tài nguyên.
 
 ---
 
@@ -318,6 +365,14 @@ private fun loadBanner() {
     }
 }
 ```
+📖 **Giải thích:**
+- `ConsentHelper.canRequestAds()`: **Kiểm tra xem người dùng đã đồng ý GDPR hay chưa.**
+- `RemoteConfig.is_load_banner_all`: **Biến điều khiển việc hiển thị Banner Ads, được cấu hình từ xa (Remote Config).**
+- `BannerPlugin.Config()`: **Đối tượng cấu hình cho Banner Ads.**
+    - `defaultAdUnitId`: **ID quảng cáo banner được lấy từ file `ads_id.xml`.**
+    - `defaultBannerType`: **Loại banner — ví dụ `Adaptive` (tự co giãn theo kích thước màn hình).**
+- `loadBannerPlugin(...)`: **Hàm tải và chèn banner vào layout.**
+- `binding.loBanner.visibility = View.VISIBLE`: **Hiển thị khu vực banner sau khi tải quảng cáo thành công.**
 
 ---
 
@@ -332,6 +387,13 @@ private fun shouldShowAds(): Boolean {
             checkInterval()
 }
 ```
+📖 **Giải thích:**
+→ **Đảm bảo chỉ hiển thị quảng cáo khi thỏa các điều kiện sau:**
+- **Quảng cáo được bật** trong `RemoteConfig`.
+- **Người dùng đã cho phép** hiển thị (đồng ý điều khoản hoặc consent GDPR).
+- **Thiết bị có kết nối mạng Internet.**
+- **Đủ thời gian cách nhau** giữa hai lần hiển thị, được kiểm tra qua hàm `checkInterval()`.
+
 
 ### 2. Quản lý interval
 ```kotlin
@@ -359,6 +421,10 @@ private fun preloadAds() {
     }, 2000)
 }
 ```
+📖 **Giải thích:**
+→ **Giúp tránh việc “spam quảng cáo”.**
+- `saveLastShowTime()`: **Lưu lại thời điểm hiển thị quảng cáo gần nhất, để kiểm soát khoảng cách giữa các lần hiển thị.**
+→ **Khi khởi động ứng dụng**, tiến hành **tải sẵn quảng cáo Native và Interstitial** để có thể hiển thị **ngay lập tức** khi cần, giúp trải nghiệm người dùng mượt mà hơn.
 
 ### 4. Xử lý khi ads fail
 ```kotlin
@@ -397,6 +463,9 @@ override fun onDestroy() {
 -keep class com.google.gson.** { *; }
 -keepattributes Signature
 ```
+📖 **Giải thích:**
+- **Mục đích:** Giúp **ProGuard** (trình nén và làm rối code khi build bản release) **không xoá hoặc đổi tên** các class quan trọng mà SDK quảng cáo cần sử dụng.
+- `-dontwarn`: **Bỏ qua các cảnh báo không cần thiết** trong quá trình rút gọn và tối ưu mã.
 
 ---
 
@@ -452,6 +521,10 @@ app/
 ├── build.gradle
 └── proguard-rules.pro
 ```
+📖 **Giải thích:**
+- **Thư mục này** chứa **toàn bộ cấu trúc ứng dụng mẫu** minh họa cách **tích hợp quảng cáo (ads)** đúng chuẩn.
+- **Phân tách môi trường:**
+    - `develop` và `production` được tách riêng với **2 file `google-services.json`** khác nhau, giúp quản lý cấu hình Firebase và AdMob theo từng môi trường.
 
 ---
 
