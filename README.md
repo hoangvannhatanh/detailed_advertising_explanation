@@ -20,12 +20,11 @@ implementation 'com.facebook.android:facebook-android-sdk:x.x.x'
 implementation 'com.github.devvtn:vtn_ads_libs:x.x.x'
 implementation 'com.facebook.shimmer:shimmer:x.x.x'
 ```
-`play-services-ads` **SDK chính thức của Google AdMob, dùng để hiển thị quảng cáo Google**:
-`facebook-mediation` **Kết nối quảng cáo Facebook vào hệ thống AdMob mediation (hiển thị xen kẽ).**:
-`facebook-android-sdk` **SDK Facebook cơ bản, cần cho đăng nhập, token, và ads.**:
-`vtn_ads_libs` **Thư viện tuỳ chỉnh (wrapper) giúp bạn dễ cấu hình quảng cáo.**:
-`shimmer` **Hiệu ứng “loading” lấp lánh (khi quảng cáo chưa tải xong).**:
-
+`play-services-ads` **SDK chính thức của Google AdMob, dùng để hiển thị quảng cáo Google**  
+`facebook-mediation` **Kết nối quảng cáo Facebook vào hệ thống AdMob mediation (hiển thị xen kẽ).**  
+`facebook-android-sdk` **SDK Facebook cơ bản, cần cho đăng nhập, token, và ads.**  
+`vtn_ads_libs` **Thư viện tuỳ chỉnh (wrapper) giúp bạn dễ cấu hình quảng cáo.**  
+`shimmer` **Hiệu ứng “loading” lấp lánh (khi quảng cáo chưa tải xong).**
 
 ### Các loại quảng cáo
 - ✅ **App Open Ads** - Hiển thị khi mở hoặc resume app
@@ -34,11 +33,11 @@ implementation 'com.facebook.shimmer:shimmer:x.x.x'
 - ✅ **Banner Ads** - Quảng cáo banner ads (thường thấy ở layout bottomsheet của màn HOME)
 - ✅ **Native Full Screen** - Load thành công Inter ADS sẽ hiện Native full ads toàn màn hình ngay sau đó
 
-`App Open Ads` **Xuất hiện khi người dùng mở app hoặc quay lại app.**:
-`Interstitial Ads` **Hiển thị full screen, thường sau khi hoàn thành một hành động (ví dụ: qua màn khác).**:
-`Native Ads` **Hiển thị quảng cáo được tùy biến giao diện, trông như một phần của app.**:
-`Banner Ads` **Quảng cáo nhỏ dọc thường nằm cuối màn Home dưới BottomTab**:
-`Native Full Screen` **Dạng native chiếm toàn màn hình, xuất hiện sau inter.**:
+`App Open Ads` **Xuất hiện khi người dùng mở app hoặc quay lại app.**
+`Interstitial Ads` **Hiển thị full screen, thường sau khi hoàn thành một hành động (ví dụ: qua màn khác).**
+`Native Ads` **Hiển thị quảng cáo được tùy biến giao diện, trông như một phần của app.**
+`Banner Ads` **Quảng cáo nhỏ dọc thường nằm cuối màn Home dưới BottomTab**
+`Native Full Screen` **Dạng native chiếm toàn màn hình, xuất hiện sau inter.**
 
 ---
 
@@ -55,8 +54,8 @@ allprojects {
     }
 }
 ```
-`repositories` **Khai báo các kho (repositories) chứa thư viện để Gradle tải về.**:
-`jitpack.io` **là nơi lưu thư viện vtn_ads_libs (vì đây là package GitHub, không có sẵn trên MavenCentral).**:
+`repositories` **Khai báo các kho (repositories) chứa thư viện để Gradle tải về.**
+`jitpack.io` **là nơi lưu thư viện vtn_ads_libs (vì đây là package GitHub, không có sẵn trên MavenCentral).**
 
 ### BƯỚC 2: Cấu hình AndroidManifest.xml
 
@@ -318,9 +317,9 @@ private fun loadBanner() {
 ```kotlin
 private fun shouldShowAds(): Boolean {
     return RemoteConfig.is_load_inter_splash &&
-           ConsentHelper.getInstance(this).canRequestAds() &&
-           isNetworkAvailable(this) &&
-           checkInterval()
+            ConsentHelper.getInstance(this).canRequestAds() &&
+            isNetworkAvailable(this) &&
+            checkInterval()
 }
 ```
 
