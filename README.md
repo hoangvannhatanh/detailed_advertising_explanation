@@ -33,11 +33,11 @@ implementation 'com.facebook.shimmer:shimmer:x.x.x'
 - ✅ **Banner Ads** - Quảng cáo banner ads (thường thấy ở layout bottomsheet của màn HOME)
 - ✅ **Native Full Screen** - Load thành công Inter ADS sẽ hiện Native full ads toàn màn hình ngay sau đó
 
-- **App Open Ads:** Xuất hiện khi người dùng mở app hoặc quay lại app.
-- **Interstitial Ads:** Hiển thị full screen, thường sau khi hoàn thành một hành động (ví dụ: qua màn khác).
-- **Native Ads:** Hiển thị quảng cáo được tùy biến giao diện, trông như một phần của app.
-- **Banner Ads:** Quảng cáo nhỏ dọc thường nằm cuối màn Home dưới BottomTab.
-- **Native Full Screen:** Dạng native chiếm toàn màn hình, xuất hiện sau inter.
+- `app_open_ads`: **Hiển thị khi người dùng mở hoặc quay lại ứng dụng (thường dùng cho màn Splash hoặc Resume).**
+- `interstitial_ads`: **Quảng cáo toàn màn hình, thường xuất hiện sau khi người dùng hoàn thành một hành động (ví dụ: chuyển sang màn khác).**
+- `native_ads`: **Quảng cáo tùy biến giao diện, hiển thị như một phần tự nhiên trong ứng dụng.**
+- `banner_ads`: **Quảng cáo kích thước nhỏ, thường đặt ở cuối màn hình chính (trên thanh BottomTab).**
+- `native_full_screen`: **Dạng native chiếm toàn màn hình, thường xuất hiện sau Interstitial Ads.**
 
 ---
 
