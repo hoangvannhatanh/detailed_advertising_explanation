@@ -20,6 +20,7 @@ implementation 'com.facebook.android:facebook-android-sdk:x.x.x'
 implementation 'com.github.devvtn:vtn_ads_libs:x.x.x'
 implementation 'com.facebook.shimmer:shimmer:x.x.x'
 ```
+📖 **Giải thích:**
 - `play-services-ads`: **SDK chính thức của Google AdMob, dùng để hiển thị quảng cáo Google.**
 - `facebook-mediation`: **Kết nối quảng cáo Facebook vào hệ thống AdMob mediation (hiển thị xen kẽ).**
 - `facebook-android-sdk`: **SDK Facebook cơ bản, cần cho đăng nhập, token, và ads.**
@@ -33,6 +34,7 @@ implementation 'com.facebook.shimmer:shimmer:x.x.x'
 - ✅ **Banner Ads** - Quảng cáo banner ads (thường thấy ở layout bottomsheet của màn HOME)
 - ✅ **Native Full Screen** - Load thành công Inter ADS sẽ hiện Native full ads toàn màn hình ngay sau đó
 
+📖 **Giải thích:**
 - `app_open_ads`: **Hiển thị khi người dùng mở hoặc quay lại ứng dụng (thường dùng cho màn Splash hoặc Resume).**
 - `interstitial_ads`: **Quảng cáo toàn màn hình, thường xuất hiện sau khi người dùng hoàn thành một hành động (ví dụ: chuyển sang màn khác).**
 - `native_ads`: **Quảng cáo tùy biến giao diện, hiển thị như một phần tự nhiên trong ứng dụng.**
@@ -54,6 +56,7 @@ allprojects {
     }
 }
 ```
+📖 **Giải thích:**
 - `repositories`: **Khai báo các kho (repositories) chứa thư viện để Gradle tải về.**
 - `jitpack.io`: **Là nơi lưu thư viện `vtn_ads_libs` (vì đây là package GitHub, không có sẵn trên MavenCentral).**
 
@@ -83,6 +86,13 @@ allprojects {
     </application>
 </manifest>
 ```
+📖 **Giải thích:**
+- `INTERNET`, `ACCESS_NETWORK_STATE`: **Các quyền mạng cần thiết để tải và hiển thị quảng cáo.**
+- `AD_ID`: **Quyền truy cập Advertising ID của thiết bị (yêu cầu từ Android 12 trở lên).**
+- `<application>`: **Khai báo các tham số cấu hình trong thẻ `<application>` của AndroidManifest.**
+- `APPLICATION_ID`: **ID ứng dụng trong Google AdMob, dùng để định danh app khi hiển thị quảng cáo.**
+- `facebook_app_id`, `facebook_client_token`: **Cấu hình cho Facebook Ads SDK.**
+
 
 ### BƯỚC 3: Tạo file ads_id.xml
 
