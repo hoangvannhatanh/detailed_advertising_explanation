@@ -328,6 +328,90 @@ AppOpenManager.getInstance().enableAppResumeWithActivity(MainActivity::class.jav
   - Nếu không có config → sử dụng `loadAndShowInterWithNativeFullScreen`.
   - **Hiển thị đồng thời** Interstitial và Native Ads trong cùng một màn hình.
 
+```kotlin
+        fun loadAndShowInterFromConfig(context: Activity, strIdAds1: String, nextAction: () -> Unit) {
+            Admob.getInstance().loadAndShowInterFromConfig(context, strIdAds1, true, object : AdCallback() {
+                override fun onNextAction() {
+                    super.onNextAction()
+                    nextAction.invoke()
+                }
+
+                override fun onAdClosedByUser() {
+                    super.onAdClosedByUser()
+                    setPref(
+                        context,
+                        TURN_ON_OFF_INTER_15S,
+                        Calendar.getInstance().timeInMillis
+                    )
+                }
+                override fun onAdFailedToShow(p0: AdError?) {
+                    super.onAdFailedToShow(p0)
+                    nextAction.invoke()
+                }
+            })
+        }
+```
+📖 **Giải thích:**
+- **Mô tả:**  
+  Load và hiển thị **quảng cáo Interstitial** từ **config có sẵn**.
+- **Tham số:**  
+  - `context: Activity`: **Context** của Activity hiện tại.  
+  - `strIdAds1: String`: **ID quảng cáo** trong config.  
+  - `nextAction: () -> Unit`: **Callback** được thực thi sau khi quảng cáo đóng.  
+- **Chức năng:**  
+  - Gọi `Admob.getInstance().loadAndShowInterFromConfig()` để **load quảng cáo từ config**.  
+  - Lắng nghe và xử lý các **callback**:
+    - `onNextAction()`: tiếp tục luồng xử lý chính.  
+    - `onAdClosedByUser()`: người dùng đóng quảng cáo.  
+    - `onAdFailedToShow()`: quảng cáo không hiển thị được.  
+  - Ghi lại **thời gian hiển thị quảng cáo gần nhất** vào `SharedPreferences` qua `saveLastShowTime()`.  
+- **Ưu điểm:**  
+  - **Không cần hardcode** ad unit ID trong code.  
+  - Dễ dàng **quản lý và thay đổi ID quảng cáo** từ server thông qua config.  
+
+```kotlin
+        fun loadAndShowInterFromConfig(context: Activity, strIdAds1: String, nextAction: () -> Unit) {
+            Admob.getInstance().loadAndShowInterFromConfig(context, strIdAds1, true, object : AdCallback() {
+                override fun onNextAction() {
+                    super.onNextAction()
+                    nextAction.invoke()
+                }
+
+                override fun onAdClosedByUser() {
+                    super.onAdClosedByUser()
+                    setPref(
+                        context,
+                        TURN_ON_OFF_INTER_15S,
+                        Calendar.getInstance().timeInMillis
+                    )
+                }
+                override fun onAdFailedToShow(p0: AdError?) {
+                    super.onAdFailedToShow(p0)
+                    nextAction.invoke()
+                }
+            })
+        }
+```
+📖 **Giải thích:**
+- **Mô tả:**  
+  Load và hiển thị **quảng cáo Interstitial** bằng **ad unit ID trực tiếp** (không thông qua config).
+- **Tham số:**  
+  - `context: Activity`: **Context** của Activity hiện tại.  
+  - `strIdAds1: String`: **Ad unit ID** của quảng cáo.  
+  - `nextAction: () -> Unit`: **Callback** được thực thi sau khi quảng cáo đóng.  
+- **Chức năng:**  
+  - Gọi `Admob.getInstance().loadAndShowInter()` để **load quảng cáo trực tiếp**.  
+  - Xử lý các **callback** tương tự `loadAndShowInterFromConfig`:
+    - `onNextAction()`: tiếp tục luồng xử lý chính.  
+    - `onAdClosedByUser()`: người dùng đóng quảng cáo.  
+    - `onAdFailedToShow()`: quảng cáo không hiển thị được.  
+  - Được dùng làm **fallback** khi không có config ads.  
+- **Sử dụng khi:**  
+  - Không có **config ads** từ server.  
+  - Cần sử dụng **ad unit ID cố định** trong mã nguồn.
+
+
+
 
 ---
 
