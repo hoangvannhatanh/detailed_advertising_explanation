@@ -1,4 +1,8 @@
 # HƯỚNG DẪN TÍCH HỢP ADS - PHIÊN BẢN RÚT GỌN
+![Kotlin](https://img.shields.io/badge/Kotlin-1.9-blue)
+![License](https://img.shields.io/badge/License-MIT-green)
+![Android](https://img.shields.io/badge/Android-12+-brightgreen)
+![vtn_ads_libs](https://img.shields.io/badge/VTN%20Ads%20Libs-v2.9.8-orange)
 
 > **Thư viện**: vtn_ads_libs v2.x.x
 > **Package**: com.github.devvtn:vtn_ads_libs:2.x.x
