@@ -291,17 +291,16 @@ AppOpenManager.getInstance().enableAppResumeWithActivity(MainActivity::class.jav
 📖 **Sử dụng:**
 ```kotlin
       showInterstitialAndProceed(onClick = {
-          showActivity(UninstallTwoActivity::class.java)
+          //làm gì tiếp theo nhỉ ?
       })
 ```
 HOẶC
 ```kotlin
       showInterstitialAndProceed {
-          showActivity(UninstallTwoActivity::class.java)
+          //làm gì tiếp theo nhỉ ?
       }
 ```
             
-
 📖 **Giải thích:**
 - **Tham số:**
   - `onClick: () -> T`: **Callback function** được thực thi sau khi quảng cáo đóng hoặc không hiển thị được.
@@ -347,10 +346,10 @@ HOẶC
   Load và hiển thị **quảng cáo Interstitial** kết hợp với **Native Full Screen**.
 - **Tham số:**
   - `context: Activity`: **Context** của Activity hiện tại.
-  - `strIdAds1: String`: **Ad unit ID** của Interstitial ad.
-  - `strIdAds2: String`: **Ad unit ID** của Native ad.
-  - `idAdsInter: String?`: **ID cấu hình** của Interstitial ad *(tùy chọn)*.
-  - `idAdsNative: String?`: **ID cấu hình** của Native ad *(tùy chọn)*.
+  - `strIdAds1: String`: **String Ad unit ID** của Interstitial ad.
+  - `strIdAds2: String`: **String Ad unit ID** của Native ad.
+  - `idAdsInter: String?`: **Key ID cấu hình** của Interstitial ad *(tùy chọn)*.
+  - `idAdsNative: String?`: **Key ID cấu hình** của Native ad *(tùy chọn)*.
   - `nextAction: () -> Unit`: **Callback** được thực thi sau khi quảng cáo đóng.
 - **Chức năng:**
   - Nếu có config ads → sử dụng `loadAndShowInterWithNativeFullScreenFromConfig`.
