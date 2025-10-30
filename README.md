@@ -2,7 +2,7 @@
 ![Kotlin](https://img.shields.io/badge/Kotlin-1.9-blue)
 ![License](https://img.shields.io/badge/License-MIT-green)
 ![Android](https://img.shields.io/badge/Android-12+-brightgreen)
-![vtn_ads_libs](https://img.shields.io/badge/VTN%20Ads%20Libs-v2.9.8-orange)
+![vtn_ads_libs](https://img.shields.io/badge/VTN%20Ads%20Libs-v2.x.x-orange)
 
 > **Thư viện**: vtn_ads_libs v2.x.x
 > **Package**: com.github.devvtn:vtn_ads_libs:2.x.x
@@ -721,3 +721,38 @@ app/
 
 ---
 
+
+## Các API Admob bổ sung (từ Remote Config)
+
+### Fetch ID
+
+- Mục đích: Lấy danh sách ad unit IDs từ Firebase Remote Config và nạp vào cache nội bộ của SDK quảng cáo để sử dụng theo key cấu hình.
+
+```java
+// Lấy chuỗi JSON chứa mapping các ad unit từ Remote Config (key: "ads_unit_id")
+Admob.getInstance().fetchAdUnits(
+    FirebaseRemoteConfig.getInstance().getString("ads_unit_id")
+);
+```
+
+- Giải thích chi tiết:
+  - Giá trị `ads_unit_id` thường là một JSON map giữa key logic (ví dụ: "inter_home", "native_home", "inter_splash") và ad unit ID thực tế.
+  - Gọi một lần sớm trong vòng đời ứng dụng (ví dụ: `Application.onCreate()` hoặc ngay đầu `Splash`) để đảm bảo các API `*FromConfig` có dữ liệu.
+  - Nếu Remote Config chưa sẵn sàng hoặc trả về rỗng, các API `*FromConfig` sẽ cần fallback sang ad unit ID cố định hoặc bỏ qua hiển thị.
+
+### Load InterSplash
+
+- Mục đích: Load (và có thể show theo cơ chế của SDK) interstitial dành riêng cho màn hình Splash bằng key config.
+
+```java
+Admob.getInstance().loadInterSplashFromConfig(
+    Splash.this,
+    "inter_splash",
+    adCallback
+);
+```
+
+- Giải thích chi tiết:
+  - `"inter_splash"` là key để tra trong mapping đã fetch bởi `fetchAdUnits`.
+  - `adCallback` nhận các sự kiện: load thành công, lỗi, đã hiển thị/đóng; bạn nên điều hướng tiếp khi nhận `onNextAction()` hoặc khi lỗi.
+  - Nên thiết lập timeout hợp lý cho màn Splash để tránh kẹt nếu mạng kém.
