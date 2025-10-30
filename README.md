@@ -245,38 +245,45 @@ AppOpenManager.getInstance().enableAppResumeWithActivity(MainActivity::class.jav
 ### 2. INTERSTITIAL ADS
 
 ```kotlin
-// Load và show cùng lúc
-private fun showInterstitial(nextAction: () -> Unit) {
-    Admob.getInstance().loadAndShowInter(
-        this,
-        RemoteConfig.inter_splash,
-        true, // show loading
-        object : AdCallback() {
-            override fun onNextAction() {
-                nextAction.invoke()
+    private fun <T> showInterstitialAndProceed(onClick: () -> T) {
+        if (!shouldShowAds()) {
+            onClick.invoke()
+            return
+        } else {
+            if(RemoteConfig.is_load_native_full_all){
+                AdsInterConfig.loadInterNativeFull(
+                    this,
+                    RemoteConfig.inter_uninstall,
+                    RemoteConfig.native_full_all,
+                    "inter_uninstall",
+                    "native_full_all") {
+                    onClick.invoke()
+                }
+            } else {
+                if (Admob.getInstance().getAdItem("inter_uninstall")?.ids?.isNotEmpty() == true) {
+                    AdsInterConfig.loadAndShowInterFromConfig(this, "inter_uninstall") {
+                        onClick.invoke()
+                    }
+                } else {
+                    AdsInterConfig.loadAndShowInter(this, RemoteConfig.inter_uninstall) {
+                        onClick.invoke()
+                    }
+                }
             }
         }
-    )
-}
-
-// Hoặc load và show với Native Full Screen (tăng fill rate)
-private fun showInterWithNative(nextAction: () -> Unit) {
-    Admob.getInstance().loadAndShowInterWithNativeFullScreen(
-        this,
-        RemoteConfig.inter_splash,
-        RemoteConfig.native_full_splash,
-        true,
-        object : AdCallback() {
-            override fun onNextAction() {
-                nextAction.invoke()
-            }
-        }
-    )
-}
+    }
 ```
 📖 **Giải thích:**
-- `loadAndShowInter()`: **Hàm vừa tải vừa hiển thị quảng cáo Interstitial.**
-- `nextAction()`: **Callback được gọi sau khi người dùng đóng quảng cáo — dùng để tiếp tục luồng xử lý, ví dụ như chuyển sang màn hình tiếp theo.**
+- **Tham số:**
+  - `onClick: () -> T`: **Callback function** được thực thi sau khi quảng cáo đóng hoặc không hiển thị được.
+- **Chức năng:**
+  - Kiểm tra điều kiện hiển thị quảng cáo bằng `shouldShowAds()`.
+  - Nếu **không nên hiển thị quảng cáo**, thực thi `callback` ngay lập tức.
+  - Nếu **nên hiển thị quảng cáo**, chọn loại quảng cáo phù hợp dựa trên cấu hình `RemoteConfig`:
+    - Nếu `RemoteConfig.is_load_native_full_all = true` → sử dụng `loadInterNativeFull`.
+    - Nếu có cấu hình ads → sử dụng `loadAndShowInterFromConfig`.
+    - Ngược lại → sử dụng `loadAndShowInter`.
+
 
 ---
 
