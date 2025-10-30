@@ -135,8 +135,19 @@ allprojects {
     <string name="banner_all">ca-app-pub-XXXXXXXX/XXXXXXXX</string>
 </resources>
 ```
+
+```kotlin
+    Admob.getInstance().fetchAdUnits(FirebaseRemoteConfig.getInstance().getString("ads_unit_id"))
+```
 📖 **Giải thích:**
 - `ad_unit_ids`: **Lưu các mã ID quảng cáo thật hoặc test.**
+- `ads_unit_id`: **Thường là một JSON được tải về và nạp vào bộ nhớ nội bộ của thư viện/SDK AdMob.**  
+  - JSON này **map** giữa các **key logic** (ví dụ: `"inter_home"`, `"native_home"`, `"inter_splash"`) và **ad unit ID thực tế** dùng để load quảng cáo.
+- **Khi nên gọi:**  
+  - Gọi **một lần sớm** trong vòng đời ứng dụng (ví dụ `Application.onCreate()` hoặc ngay đầu `SplashActivity`) để đảm bảo các API `*FromConfig` đã có dữ liệu khi cần.
+- **Mục đích lưu vào bộ nhớ:**  
+  - Giúp các API `load...FromConfig` truy xuất nhanh ad unit ID mà không phải gọi mạng mỗi lần, **tăng tốc hiển thị quảng cáo** và **giảm độ trễ**.
+
 - `App Open`, `Interstitial`, `Native`, `Banner`: **Mỗi loại quảng cáo có một mã ID riêng biệt.**
 - `YOUR_FB_APP_ID`: **Thay bằng ID thật lấy từ Facebook Developer.**
 - `adjust_token`: **Mã token của Adjust dùng để theo dõi và đo lường hiệu quả quảng cáo (nếu sử dụng Adjust SDK).**
@@ -722,23 +733,7 @@ app/
 ---
 
 
-## Các API Admob bổ sung (từ Remote Config)
 
-### Fetch ID
-
-- Mục đích: Lấy danh sách ad unit IDs từ Firebase Remote Config và nạp vào cache nội bộ của SDK quảng cáo để sử dụng theo key cấu hình.
-
-```java
-// Lấy chuỗi JSON chứa mapping các ad unit từ Remote Config (key: "ads_unit_id")
-Admob.getInstance().fetchAdUnits(
-    FirebaseRemoteConfig.getInstance().getString("ads_unit_id")
-);
-```
-
-- Giải thích chi tiết:
-  - Giá trị `ads_unit_id` thường là một JSON map giữa key logic (ví dụ: "inter_home", "native_home", "inter_splash") và ad unit ID thực tế.
-  - Gọi một lần sớm trong vòng đời ứng dụng (ví dụ: `Application.onCreate()` hoặc ngay đầu `Splash`) để đảm bảo các API `*FromConfig` có dữ liệu.
-  - Nếu Remote Config chưa sẵn sàng hoặc trả về rỗng, các API `*FromConfig` sẽ cần fallback sang ad unit ID cố định hoặc bỏ qua hiển thị.
 
 ### Load InterSplash
 
