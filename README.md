@@ -247,9 +247,9 @@ AppOpenManager.getInstance().enableAppResumeWithActivity(MainActivity::class.jav
 ```kotlin
     fun isShowInter15s(context: Context): Boolean {
         val timeOffResume15s = getPref(context, TURN_ON_OFF_INTER_15S, 0L) ?: 0L
-        val timeDelay = (RemoteConfig.is_load_interval_show_inter.toString() + "000").toLong()
+        val timeDelay = (RemoteConfig.interval_show_interstitial.toString() + "000").toLong()
         return try {
-            java.util.Calendar.getInstance().timeInMillis > (timeOffResume15s + timeDelay)
+            Calendar.getInstance().timeInMillis > (timeOffResume15s + timeDelay)
         } catch (e: Exception) {
             return true
         }
