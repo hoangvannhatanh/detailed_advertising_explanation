@@ -539,5 +539,200 @@ app/
 
 ---
 
-**🎉 Hoàn tất! Bắt đầu kiếm tiền từ quảng cáo!**
+## Tổng quan
+
+Dự án Volume Bass Booster sử dụng một hệ thống quảng cáo phức tạp với nhiều loại quảng cáo khác nhau, bao gồm Interstitial Ads và Native Ads. Hệ thống được thiết kế để tối ưu hóa trải nghiệm người dùng và tối đa hóa doanh thu từ quảng cáo.
+
+## Các hàm Load Ads chính
+
+### 1. `showInterstitialAndProceed`
+
+**Mô tả**: Hàm wrapper chính để hiển thị quảng cáo interstitial trước khi thực hiện một hành động tiếp theo.
+
+**Tham số**:
+- `onClick: () -> T`: Callback function được thực thi sau khi quảng cáo đóng hoặc không hiển thị được
+
+**Chức năng**:
+- Kiểm tra điều kiện hiển thị quảng cáo (`shouldShowAds()`)
+- Nếu không nên hiển thị quảng cáo, thực thi callback ngay lập tức
+- Nếu nên hiển thị quảng cáo, chọn loại quảng cáo phù hợp dựa trên RemoteConfig:
+  - Nếu `RemoteConfig.is_load_native_full_all = true`: Sử dụng `loadInterNativeFull`
+  - Nếu có config ads: Sử dụng `loadAndShowInterFromConfig`
+  - Ngược lại: Sử dụng `loadAndShowInter`
+
+**Sử dụng trong**:
+- `MainActivity`: Khi chuyển đến Settings, Volume, Equalizer
+- `SettingsActivity`: Khi chuyển đến EdgeLight
+- `UninstallActivity`: Khi chuyển đến UninstallTwoActivity
+- `IntroActivity`: Khi chuyển trang trong intro
+
+### 2. `loadAndShowInterFromConfig`
+
+**Mô tả**: Load và hiển thị quảng cáo interstitial từ config có sẵn.
+
+**Tham số**:
+- `context: Activity`: Context của Activity hiện tại
+- `strIdAds1: String`: ID của quảng cáo trong config
+- `nextAction: () -> Unit`: Callback được thực thi sau khi quảng cáo đóng
+
+**Chức năng**:
+- Sử dụng `Admob.getInstance().loadAndShowInterFromConfig()` để load quảng cáo từ config
+- Xử lý các callback: `onNextAction()`, `onAdClosedByUser()`, `onAdFailedToShow()`
+- Lưu thời gian hiển thị quảng cáo cuối cùng vào SharedPreferences
+
+**Ưu điểm**:
+- Sử dụng config có sẵn, không cần hardcode ad unit ID
+- Dễ dàng thay đổi ad unit ID từ server
+
+### 3. `loadAndShowInter`
+
+**Mô tả**: Load và hiển thị quảng cáo interstitial với ad unit ID trực tiếp.
+
+**Tham số**:
+- `context: Activity`: Context của Activity hiện tại
+- `strIdAds1: String`: Ad unit ID của quảng cáo
+- `nextAction: () -> Unit`: Callback được thực thi sau khi quảng cáo đóng
+
+**Chức năng**:
+- Sử dụng `Admob.getInstance().loadAndShowInter()` để load quảng cáo
+- Xử lý các callback tương tự như `loadAndShowInterFromConfig`
+- Fallback khi không có config ads
+
+**Sử dụng khi**:
+- Không có config ads sẵn có
+- Cần sử dụng ad unit ID cố định
+
+### 4. `loadInterNativeFull`
+
+**Mô tả**: Load và hiển thị quảng cáo interstitial kết hợp với native full screen.
+
+**Tham số**:
+- `context: Activity`: Context của Activity hiện tại
+- `strIdAds1: String`: Ad unit ID của interstitial ad
+- `strIdAds2: String`: Ad unit ID của native ad
+- `idAdsInter: String?`: ID config của interstitial ad (optional)
+- `idAdsNative: String?`: ID config của native ad (optional)
+- `nextAction: () -> Unit`: Callback được thực thi sau khi quảng cáo đóng
+
+**Chức năng**:
+- Kiểm tra nếu có config ads, sử dụng `loadAndShowInterWithNativeFullScreenFromConfig`
+- Nếu không có config, sử dụng `loadAndShowInterWithNativeFullScreen`
+- Hiển thị cả interstitial và native ads trong một màn hình
+
+**Sử dụng khi**:
+- `RemoteConfig.is_load_native_full_all = true`
+- Cần hiển thị cả interstitial và native ads cùng lúc
+
+### 5. `loadAndShowInterWithNativeFullScreenFromConfig`
+
+**Mô tả**: Load và hiển thị quảng cáo interstitial kết hợp native từ config.
+
+**Tham số**:
+- `context: Activity`: Context của Activity hiện tại
+- `idAdsInter: String`: ID config của interstitial ad
+- `idAdsNative: String`: ID config của native ad
+- `isShowAds: Boolean`: Có hiển thị quảng cáo hay không
+- `callback: AdCallback`: Callback xử lý sự kiện quảng cáo
+
+**Chức năng**:
+- Load cả interstitial và native ads từ config
+- Hiển thị kết hợp cả hai loại quảng cáo
+- Xử lý các sự kiện: load thành công, đóng quảng cáo, lỗi
+
+**Ưu điểm**:
+- Sử dụng config, dễ quản lý
+- Kết hợp hai loại quảng cáo hiệu quả
+
+### 6. `loadAndShowInterWithNativeFullScreen`
+
+**Mô tả**: Load và hiển thị quảng cáo interstitial kết hợp native với ad unit ID trực tiếp.
+
+**Tham số**:
+- `context: Activity`: Context của Activity hiện tại
+- `strIdAds1: String`: Ad unit ID của interstitial ad
+- `strIdAds2: String`: Ad unit ID của native ad
+- `isShowAds: Boolean`: Có hiển thị quảng cáo hay không
+- `callback: AdCallback`: Callback xử lý sự kiện quảng cáo
+
+**Chức năng**:
+- Load cả interstitial và native ads với ad unit ID cố định
+- Hiển thị kết hợp cả hai loại quảng cáo
+- Fallback khi không có config
+
+## Luồng hoạt động
+
+### 1. Kiểm tra điều kiện hiển thị quảng cáo
+```kotlin
+private fun shouldShowAds(): Boolean {
+    return isFullAdsAdmob() && 
+           ConsentHelper.getInstance(this).canRequestAds() && 
+           isNetworkAvailable(this) && 
+           isShowInter15s(this)
+}
+```
+
+### 2. Chọn loại quảng cáo phù hợp
+- **Native Full All**: `loadInterNativeFull`
+- **Có Config**: `loadAndShowInterFromConfig`
+- **Fallback**: `loadAndShowInter`
+
+### 3. Xử lý callback
+- `onNextAction()`: Thực thi hành động tiếp theo
+- `onAdClosedByUser()`: Lưu thời gian hiển thị quảng cáo
+- `onAdFailedToShow()`: Thực thi hành động tiếp theo khi lỗi
+
+## Cấu hình RemoteConfig
+
+### Các flag quan trọng:
+- `is_load_native_full_all`: Bật/tắt native full screen ads
+- `is_load_native_intro_full`: Bật/tắt native ads trong intro
+- `is_load_native_intro_full1`: Bật/tắt native ads trong intro (phiên bản 2)
+- `is_load_native_fullscreen`: Bật/tắt native fullscreen ads
+
+### Ad Unit IDs:
+- `inter_home`: Interstitial ads cho màn hình chính
+- `inter_theme`: Interstitial ads cho màn hình theme
+- `inter_preset`: Interstitial ads cho màn hình preset
+- `inter_intro`: Interstitial ads cho màn hình intro
+- `inter_edge_lighting`: Interstitial ads cho edge lighting
+- `inter_uninstall`: Interstitial ads cho màn hình uninstall
+
+## Lưu ý quan trọng
+
+1. **Consent Management**: Tất cả các hàm đều kiểm tra `ConsentHelper.getInstance(context).canRequestAds()`
+2. **Network Check**: Kiểm tra kết nối mạng trước khi load ads
+3. **Rate Limiting**: Sử dụng `isShowInter15s()` để giới hạn tần suất hiển thị quảng cáo
+4. **Error Handling**: Xử lý lỗi và fallback gracefully
+5. **Memory Management**: Giải phóng quảng cáo sau khi hiển thị để tránh memory leak
+
+## Cách sử dụng
+
+### Ví dụ cơ bản:
+```kotlin
+showInterstitialAndProceed {
+    // Hành động tiếp theo
+    startActivity(Intent(this, NextActivity::class.java))
+}
+```
+
+### Ví dụ với custom logic:
+```kotlin
+if (RemoteConfig.is_load_native_full_all) {
+    AdsInterConfig.loadInterNativeFull(
+        this,
+        RemoteConfig.inter_home,
+        RemoteConfig.native_full_all,
+        "inter_home",
+        "native_full_all"
+    ) {
+        // Hành động tiếp theo
+    }
+} else {
+    AdsInterConfig.loadAndShowInterFromConfig(this, "inter_home") {
+        // Hành động tiếp theo
+    }
+}
+```
+
+Hệ thống quảng cáo này được thiết kế để tối ưu hóa trải nghiệm người dùng và tối đa hóa doanh thu, với khả năng linh hoạt trong việc chọn loại quảng cáo phù hợp dựa trên cấu hình từ server.
 
