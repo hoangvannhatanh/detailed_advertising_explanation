@@ -43,6 +43,21 @@ implementation 'com.facebook.shimmer:shimmer:x.x.x'
 
 ---
 
+## 📚 MỤC LỤC
+- [Tổng quan](#-tổng-quan)
+- [Bước 1: Cấu hình build.gradle](#bước-1-cấu-hình-buildgradle-root)
+- [Bước 2: Cấu hình Manifest](#bước-2-cấu-hình-androidmanifestxml)
+- [Bước 3: Tạo ads_idxml](#bước-3-tạo-file-ads_idxml)
+- [Bước 4: Application Class](#bước-4-tạo-application-class)
+- [Bước 5: Remote Config](#bước-5-cấu-hình-remote-config)
+- [Bước 6: Xin Consent GDPR](#bước-6-xin-consent-gdpr)
+- [Sử dụng quảng cáo](#-sử-dụng-quảng-cáo)
+- [Best Practices](#-best-practices)
+- [Checklist trước khi release](#-checklist-trước-khi-release)
+- [Troubleshooting](#-troubleshooting-nhanh)
+
+---
+
 ## 🚀 CÁC BƯỚC TÍCH HỢP
 
 ### BƯỚC 1: Cấu hình build.gradle (Root)
