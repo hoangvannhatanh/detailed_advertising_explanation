@@ -245,6 +245,21 @@ AppOpenManager.getInstance().enableAppResumeWithActivity(MainActivity::class.jav
 ### 2. INTERSTITIAL ADS
 
 ```kotlin
+    fun isShowInter15s(context: Context): Boolean {
+        val timeOffResume15s = getPref(context, TURN_ON_OFF_INTER_15S, 0L) ?: 0L
+        val timeDelay = (RemoteConfig.is_load_interval_show_inter.toString() + "000").toLong()
+        return try {
+            java.util.Calendar.getInstance().timeInMillis > (timeOffResume15s + timeDelay)
+        } catch (e: Exception) {
+            return true
+        }
+    }
+    private fun shouldShowAds(): Boolean {
+        return RemoteConfig.is_load_inter_uninstall &&
+                isFullAdsAdmob() &&
+                ConsentHelper.getInstance(this@UninstallActivity).canRequestAds() &&
+                isNetworkAvailable(this) && isShowInter15s(this)
+    }
     private fun <T> showInterstitialAndProceed(onClick: () -> T) {
         if (!shouldShowAds()) {
             onClick.invoke()
@@ -273,6 +288,20 @@ AppOpenManager.getInstance().enableAppResumeWithActivity(MainActivity::class.jav
         }
     }
 ```
+📖 **Sử dụng:**
+```kotlin
+      showInterstitialAndProceed(onClick = {
+          showActivity(UninstallTwoActivity::class.java)
+      })
+```
+HOẶC
+```kotlin
+      showInterstitialAndProceed {
+          showActivity(UninstallTwoActivity::class.java)
+      }
+```
+            
+
 📖 **Giải thích:**
 - **Tham số:**
   - `onClick: () -> T`: **Callback function** được thực thi sau khi quảng cáo đóng hoặc không hiển thị được.
@@ -370,8 +399,8 @@ AppOpenManager.getInstance().enableAppResumeWithActivity(MainActivity::class.jav
   - Dễ dàng **quản lý và thay đổi ID quảng cáo** từ server thông qua config.  
 
 ```kotlin
-        fun loadAndShowInterFromConfig(context: Activity, strIdAds1: String, nextAction: () -> Unit) {
-            Admob.getInstance().loadAndShowInterFromConfig(context, strIdAds1, true, object : AdCallback() {
+        fun loadAndShowInter(context: Activity, strIdAds1: String, nextAction: () -> Unit) {
+            Admob.getInstance().loadAndShowInter(context, strIdAds1, true, object : AdCallback() {
                 override fun onNextAction() {
                     super.onNextAction()
                     nextAction.invoke()
