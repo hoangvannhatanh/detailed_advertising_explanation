@@ -284,6 +284,50 @@ AppOpenManager.getInstance().enableAppResumeWithActivity(MainActivity::class.jav
     - Nếu có cấu hình ads → sử dụng `loadAndShowInterFromConfig`.
     - Ngược lại → sử dụng `loadAndShowInter`.
 
+```kotlin
+        fun loadInterNativeFull(context: Activity, strIdAds1: String, strIdAds2: String, idAdsInter: String? = null, idAdsNative: String? = null, nextAction: () -> Unit) {
+            val c = object : AdCallback() {
+                override fun onNextAction() {
+                    super.onNextAction()
+                    nextAction.invoke()
+                    setPref(context, TURN_ON_OFF_INTER_15S, Calendar.getInstance().timeInMillis)
+                }
+
+                override fun onAdClosedByUser() {
+                    super.onAdClosedByUser()
+                }
+
+                override fun onAdFailedToShow(p0: AdError?) {
+                    super.onAdFailedToShow(p0)
+                    nextAction.invoke()
+                }
+            }
+            if (idAdsInter == null || idAdsNative == null) {
+                Admob.getInstance().loadAndShowInterWithNativeFullScreen(context, strIdAds1, strIdAds2, true, c)
+            } else {
+                if (Admob.getInstance().getAdItem(idAdsInter)?.ids?.isNotEmpty() == true && Admob.getInstance().getAdItem(idAdsNative)?.ids?.isNotEmpty() == true) {
+                    Admob.getInstance().loadAndShowInterWithNativeFullScreenFromConfig(context,  idAdsInter, idAdsNative, true, c)
+                } else {
+                    Admob.getInstance().loadAndShowInterWithNativeFullScreen(context, strIdAds1, strIdAds2, true, c)
+                }
+            }
+        }
+```
+📖 **Giải thích:**
+- **Mô tả:**  
+  Load và hiển thị **quảng cáo Interstitial** kết hợp với **Native Full Screen**.
+- **Tham số:**
+  - `context: Activity`: **Context** của Activity hiện tại.
+  - `strIdAds1: String`: **Ad unit ID** của Interstitial ad.
+  - `strIdAds2: String`: **Ad unit ID** của Native ad.
+  - `idAdsInter: String?`: **ID cấu hình** của Interstitial ad *(tùy chọn)*.
+  - `idAdsNative: String?`: **ID cấu hình** của Native ad *(tùy chọn)*.
+  - `nextAction: () -> Unit`: **Callback** được thực thi sau khi quảng cáo đóng.
+- **Chức năng:**
+  - Nếu có config ads → sử dụng `loadAndShowInterWithNativeFullScreenFromConfig`.
+  - Nếu không có config → sử dụng `loadAndShowInterWithNativeFullScreen`.
+  - **Hiển thị đồng thời** Interstitial và Native Ads trong cùng một màn hình.
+
 
 ---
 
