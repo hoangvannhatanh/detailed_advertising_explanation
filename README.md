@@ -360,14 +360,10 @@ HOẶC
                     nextAction.invoke()
                 }
             }
-            if (idAdsInter == null || idAdsNative == null) {
-                Admob.getInstance().loadAndShowInterWithNativeFullScreen(context, strIdAds1, strIdAds2, true, c)
+            if (Admob.getInstance().getAdItem(idAdsInter)?.ids?.isNotEmpty() == true && Admob.getInstance().getAdItem(idAdsNative)?.ids?.isNotEmpty() == true) {
+                Admob.getInstance().loadAndShowInterWithNativeFullScreenFromConfig(context,  idAdsInter, idAdsNative, true, c)
             } else {
-                if (Admob.getInstance().getAdItem(idAdsInter)?.ids?.isNotEmpty() == true && Admob.getInstance().getAdItem(idAdsNative)?.ids?.isNotEmpty() == true) {
-                    Admob.getInstance().loadAndShowInterWithNativeFullScreenFromConfig(context,  idAdsInter, idAdsNative, true, c)
-                } else {
-                    Admob.getInstance().loadAndShowInterWithNativeFullScreen(context, strIdAds1, strIdAds2, true, c)
-                }
+                Admob.getInstance().loadAndShowInterWithNativeFullScreen(context, strIdAds1, strIdAds2, true, c)
             }
         }
 ```
