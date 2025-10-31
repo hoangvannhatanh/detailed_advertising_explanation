@@ -844,9 +844,26 @@ override fun onDestroy() {
 -keepattributes Signature
 ```
 📖 **Giải thích:**
-- **Mục đích:** Giúp **ProGuard** (trình nén và làm rối code khi build bản release) **không xoá hoặc đổi tên** các class quan trọng mà SDK quảng cáo cần sử dụng.
-- `-dontwarn`: **Bỏ qua các cảnh báo không cần thiết** trong quá trình rút gọn và tối ưu mã.
 
+- **`🔧 PROGUARD RULES`** — Cấu hình giúp **ProGuard** không xoá hoặc làm rối (obfuscate) các class quan trọng của SDK quảng cáo.
+
+- **Google Ads**  
+  - `-keep class com.google.android.gms.ads.** { *; }`  
+    Giữ nguyên toàn bộ class trong thư viện **Google Mobile Ads SDK**.  
+  - `-keep interface com.google.android.gms.ads.** { *; }`  
+    Giữ nguyên tất cả các interface của Google Ads (tránh lỗi runtime).  
+  - `-dontwarn com.google.android.gms.**`  
+    Bỏ qua cảnh báo không cần thiết liên quan đến thư viện Google Play Services.
+
+- **Facebook Ads**  
+  - `-dontwarn com.facebook.infer.annotation.**`  
+    Bỏ qua cảnh báo từ Facebook SDK về annotation nội bộ, không ảnh hưởng đến hoạt động quảng cáo.
+
+- **Gson**  
+  - `-keep class com.google.gson.** { *; }`  
+    Giữ nguyên tất cả class của thư viện **Gson** để tránh lỗi khi parse JSON.  
+  - `-keepattributes Signature`  
+    Giữ lại thông tin **kiểu generic** cần thiết cho quá trình deserialization.
 ---
 
 ## ⚠️ LƯU Ý QUAN TRỌNG
