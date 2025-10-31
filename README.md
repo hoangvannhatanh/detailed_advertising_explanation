@@ -637,7 +637,7 @@ private fun showNativeAd(nativeAd: NativeAd) {
 - **Hiển thị Native Ad với layout động**:  
   - Tùy biến giao diện hiển thị quảng cáo dựa trên trạng thái (đã load hay chưa).  
   - Giúp quảng cáo hòa nhập tự nhiên với nội dung app.
-- **`pushAdsToViewCustom()`**:  
+- **`showNativeAd()`**:  
   - Hàm **bind nội dung quảng cáo vào layout** (ví dụ: ảnh, tiêu đề, mô tả, CTA).  
   - Đảm bảo quảng cáo được gắn đúng định dạng và hiển thị đúng vị trí trong `NativeAdView`.
 
@@ -696,17 +696,19 @@ private fun shouldShowAds(): Boolean {
 
 ### 2. Quản lý interval
 ```kotlin
-private fun checkInterval(): Boolean {
-    val lastTime = getSharedPreferences("app_prefs", MODE_PRIVATE)
-        .getLong("last_show_ads", 0)
-    val interval = RemoteConfig.interval_show_interstitial * 1000
-    return (System.currentTimeMillis() - lastTime) >= interval
-}
+setPref(context, TURN_ON_OFF_INTER_15S, Calendar.getInstance().timeInMillis)
 
-private fun saveLastShowTime() {
-    getSharedPreferences("app_prefs", MODE_PRIVATE).edit()
-        .putLong("last_show_ads", System.currentTimeMillis())
-        .apply()
+fun isShowInter15s(context: Context): Boolean {
+    val timeOffResume15s = getPref(context, TURN_ON_OFF_INTER_15S, 0L) ?: 0L
+    val timeDelay = (RemoteConfig.is_load_interval_show_inter.toString() + "000").toLong()
+    return tryOrCatch(
+        blockTry = {
+            Calendar.getInstance().timeInMillis > (timeOffResume15s + timeDelay)
+        },
+        blockCatch = {
+            true
+        }
+    )
 }
 ```
 
