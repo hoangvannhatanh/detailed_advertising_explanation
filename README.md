@@ -1,4 +1,5 @@
 # HƯỚNG DẪN TÍCH HỢP ADS - PHIÊN BẢN RÚT GỌN
+![NTD](https://img.shields.io/badge/NTD-2025-yellow)
 ![Kotlin](https://img.shields.io/badge/Kotlin-1.9-blue)
 ![License](https://img.shields.io/badge/License-MIT-green)
 ![Android](https://img.shields.io/badge/Android-12+-brightgreen)
