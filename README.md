@@ -175,6 +175,22 @@ class MyApplication : AdsApplication() {
     override fun getKeyRemoteIntervalShowInterstitial() = "interval_show_interstitial"
     override fun getListTestDeviceId() = null
     override fun getIntentOpenNotification() = Intent(this, SplashActivity::class.java)
+    
+    //SplashActivity
+    ```kotlin
+    if (Admob.getInstance().getAdItem("open_all") != null &&
+    Admob.getInstance().getAdItem("open_all").ids.size > 0) {
+        // Trường hợp A: Load từ config (ưu tiên)
+        AppOpenManager.getInstance().setAppResumeAdId(
+            Admob.getInstance().getAdItem("open_all").ids[0]
+        )
+    } else {
+        // Trường hợp B: Load với ad unit ID trực tiếp (fallback)
+        AppOpenManager.getInstance().setAppResumeAdId(
+            RemoteConfig.open_all
+        )
+    }
+```
 }
 ```
 📖 **Giải thích chi tiết:**
