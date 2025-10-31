@@ -48,28 +48,32 @@ implementation 'com.facebook.shimmer:shimmer:x.x.x'
 
 ---
 
-## 📋 MỤC LỤC
+## 📚 MỤC LỤC
 
-- [1. TỔNG QUAN](#tổng-quan)
-- [2. Bước 1: Cấu hình build.gradle](#bước-1-cấu-hình-buildgradle)
-- [3. Bước 2: Cấu hình AndroidManifest](#bước-2-cấu-hình-androidmanifest)
-- [4. Bước 3: Tạo file ads_id.xml](#bước-3-tạo-file-ads_idxml)
-- [5. Bước 4: Application Class](#bước-4-application-class)
-- [6. Bước 5: Remote Config](#bước-5-remote-config)
-- [7. Bước 6: Xin Consent (GDPR)](#bước-6-xin-consent-gdpr)
-- [8. Sử dụng quảng cáo](#sử-dụng-quảng-cáo)
-  - [8.1 App Open Ads](#app-open-ads)
-  - [8.2 Interstitial Ads](#interstitial-ads)
-  - [8.3 Native Ads](#native-ads)
-  - [8.4 Banner Ads](#banner-ads)
-- [9. Best Practices](#best-practices)
-- [10. ProGuard Rules](#proguard-rules)
-- [11. Lưu ý quan trọng](#lưu-ý-quan-trọng)
-- [12. Checklist trước khi release](#checklist-trước-khi-release)
-- [13. Cấu trúc dự án](#cấu-trúc-dự-án)
-- [14. Troubleshooting](#troubleshooting)
-- [15. Load InterSplash](#load-intersplash)
-- [16. About](#about)
+- [📘 Giới thiệu](#-giới-thiệu)
+- [⚙️ Cài đặt](#️-cài-đặt)
+  - [Bước 1 – Cấu hình build.gradle (root)](#bước-1--cấu-hình-buildgradle-root)
+  - [Bước 2 – Cấu hình AndroidManifest.xml](#bước-2--cấu-hình-androidmanifestxml)
+  - [Bước 3 – Tạo file ads_id.xml](#bước-3--tạo-file-ads_idxml)
+  - [Bước 4 – Tạo Application Class](#bước-4--tạo-application-class)
+  - [Bước 5 – Cấu hình Remote Config](#bước-5--cấu-hình-remote-config)
+  - [Bước 6 – Xin Consent (GDPR)](#bước-6--xin-consent-gdpr)
+- [🚀 Sử dụng quảng cáo](#-sử-dụng-quảng-cáo)
+  - [App Open Ads](#app-open-ads)
+  - [Interstitial Ads](#interstitial-ads)
+  - [Native Ads](#native-ads)
+  - [Banner Ads](#banner-ads)
+- [✅ Best Practices (Thực hành tốt)](#-best-practices-thực-hành-tốt)
+- [🔧 Proguard Rules](#-proguard-rules)
+- [⚠️ Lưu ý quan trọng](#️-lưu-ý-quan-trọng)
+- [🎯 Checklist trước khi release](#-checklist-trước-khi-release)
+- [📊 Cấu trúc dự án](#-cấu-trúc-dự-án)
+- [📞 Tài liệu tham khảo](#-tài-liệu-tham-khảo)
+- [🚨 Troubleshooting (Xử lý lỗi nhanh)](#-troubleshooting-xử-lý-lỗi-nhanh)
+- [🏁 Kết luận](#-kết-luận)
+- [👨‍💻 About the Author](#-about-the-author)
+- [📄 License](#-license)
+
 
 ---
 
