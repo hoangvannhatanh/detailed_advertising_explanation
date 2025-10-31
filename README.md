@@ -937,33 +937,44 @@ app/
 
 ---
 
-## 🚨 TROUBLESHOOTING NHANH
+## 🚨 Troubleshooting Nhanh
 
-| Vấn đề | Giải pháp                                                                                  |
-|--------|--------------------------------------------------------------------------------------------|
-| Ads không hiển thị | Kiểm tra remote config, consent, internet, Ad IDs hoặc máy ảo thường không show native ads |
-| Crash khi show ads | Kiểm tra context null, Activity destroyed                                                  |
-| Facebook mediation không work | Kiểm tra Facebook App ID, Client Token                                                     |
-| Proguard error | Thêm keep rules cho ads classes                                                            |
+| 🧩 Vấn đề | 💡 Giải pháp |
+|-----------|--------------|
+| **Ads không hiển thị** | Kiểm tra **Remote Config**, **Consent**, **Internet**, **Ad IDs**.<br>⚠️ Lưu ý: máy ảo (emulator) thường **không hiển thị Native Ads**. |
+| **Crash khi show ads** | Kiểm tra **context null** hoặc **Activity** đã bị **destroy** trước khi show. |
+| **Facebook mediation không hoạt động** | Xác nhận **Facebook App ID** và **Client Token** trong **manifest** và **project settings**. |
+| **ProGuard error** | Thêm đầy đủ **keep rules** cho các class liên quan đến **Ads SDK**. |
 
 ---
 
+## ℹ️ About
 
+**Detailed Advertising Explanation** — tài liệu hướng dẫn chi tiết cách **tích hợp, cấu hình và tối ưu quảng cáo trong Android App**.  
+Dự án giúp bạn hiểu sâu về cách hoạt động của **AdMob SDK**, **Facebook Mediation**, và **Firebase Remote Config**, cùng cách triển khai thực tế theo chuẩn sản phẩm.
 
+### ✳️ Hỗ trợ:
+- ✅ **AdMob SDK**
+- ✅ **Facebook Audience Network Mediation**
+- ✅ **Firebase Remote Config + Consent SDK**
+- ✅ **Các loại quảng cáo:** App Open, Interstitial, Native, Banner
 
-### Load InterSplash
+### 📦 Thông tin:
+- **Tác giả:** [Hoàng Văn Nhật Anh](https://github.com/hoangvannhatanh)  
+- **Phiên bản:** `v2.9.8`  
+- **Giấy phép:** [MIT License](./LICENSE)  
+- **Trạng thái dự án:** Stable / Production Ready  
+- **Cập nhật lần cuối:** 2025  
 
-- Mục đích: Load (và có thể show theo cơ chế của SDK) interstitial dành riêng cho màn hình Splash bằng key config.
+---
 
-```java
-Admob.getInstance().loadInterSplashFromConfig(
-    Splash.this,
-    "inter_splash",
-    adCallback
-);
-```
+## 🔗 Tài nguyên hữu ích
 
-- Giải thích chi tiết:
-  - `"inter_splash"` là key để tra trong mapping đã fetch bởi `fetchAdUnits`.
-  - `adCallback` nhận các sự kiện: load thành công, lỗi, đã hiển thị/đóng; bạn nên điều hướng tiếp khi nhận `onNextAction()` hoặc khi lỗi.
-  - Nên thiết lập timeout hợp lý cho màn Splash để tránh kẹt nếu mạng kém.
+| 🌐 Nguồn | 🔍 Mô tả |
+|----------|----------|
+| [Google AdMob SDK Documentation](https://developers.google.com/admob/android) | Tài liệu chính thức về AdMob SDK cho Android |
+| [Facebook Audience Network Mediation](https://developers.facebook.com/docs/audience-network/mediation) | Hướng dẫn tích hợp Facebook Audience Network với AdMob |
+| [Firebase Remote Config Guide](https://firebase.google.com/docs/remote-config) | Quản lý cấu hình động và điều khiển hiển thị quảng cáo từ xa |
+| [Consent SDK (User Messaging Platform)](https://developers.google.com/admob/ump/android/quick-start) | SDK xin và lưu trạng thái đồng ý của người dùng (GDPR / CCPA) |
+| [Open-Source License Templates](https://choosealicense.com/licenses/mit/) | Tham khảo các mẫu giấy phép phổ biến cho dự án open-source |
+
