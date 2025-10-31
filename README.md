@@ -70,7 +70,10 @@ implementation 'com.facebook.shimmer:shimmer:x.x.x'
 - [🎯 CHECKLIST TRƯỚC KHI RELEASE](#-checklist-trước-khi-release)
 - [📊 CẤU TRÚC DỰ ÁN](#-cấu-trúc-dự-án)
 - [🚨 TROUBLESHOOTING NHANH](#-troubleshooting-nhanh)
-- [🏁 KẾT LUẬN](#-kết-luận)
+- [ℹ️ About](#-about)
+  - [✳️ Hỗ trợ](#-hỗ-trợ)
+  - [📦 Thông tin](#-thông-tin)
+- [🔗 Tài nguyên hữu ích](#-tài-nguyên-hữu-ích)
 
 
 ---
@@ -960,8 +963,8 @@ Dự án giúp bạn hiểu sâu về cách hoạt động của **AdMob SDK**, 
 - ✅ **Các loại quảng cáo:** App Open, Interstitial, Native, Banner
 
 ### 📦 Thông tin:
-- **Tác giả:** [Hoàng Văn Nhật Anh](https://github.com/hoangvannhatanh)  
-- **Phiên bản:** `v2.9.8`  
+- **Tác giả:** [Hoang Van Nhat Anh](https://github.com/hoangvannhatanh)  
+- **Phiên bản:** `v2.x.x`  
 - **Giấy phép:** [MIT License](./LICENSE)  
 - **Trạng thái dự án:** Stable / Production Ready  
 - **Cập nhật lần cuối:** 2025  
