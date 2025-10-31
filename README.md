@@ -176,9 +176,8 @@ class MyApplication : AdsApplication() {
     override fun getListTestDeviceId() = null
     override fun getIntentOpenNotification() = Intent(this, SplashActivity::class.java)
     
-    //SplashActivity
-    ```kotlin
-    if (Admob.getInstance().getAdItem("open_all") != null &&
+   //SplashActivity
+   if (Admob.getInstance().getAdItem("open_all") != null &&
     Admob.getInstance().getAdItem("open_all").ids.size > 0) {
         // Trường hợp A: Load từ config (ưu tiên)
         AppOpenManager.getInstance().setAppResumeAdId(
@@ -190,7 +189,6 @@ class MyApplication : AdsApplication() {
             RemoteConfig.open_all
         )
     }
-```
 }
 ```
 📖 **Giải thích chi tiết:**
