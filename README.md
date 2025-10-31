@@ -64,7 +64,7 @@ implementation 'com.facebook.shimmer:shimmer:x.x.x'
   - [Interstitial Ads](#interstitial-ads)
   - [Native Ads](#native-ads)
   - [Banner Ads](#banner-ads)
-- [✅ Best Practices (Thực hành tốt)](#-best-practices-thực-hành-tốt)
+- [✅ BEST PRACTICES](#-best-practices-thực-hành-tốt)
 - [🔧 Proguard Rules](#-proguard-rules)
 - [⚠️ Lưu ý quan trọng](#️-lưu-ý-quan-trọng)
 - [🎯 Checklist trước khi release](#-checklist-trước-khi-release)
