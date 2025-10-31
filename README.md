@@ -668,32 +668,89 @@ private fun showNativeAd(nativeAd: NativeAd) {
 ### 4. BANNER ADS
 
 ```kotlin
-private fun loadBanner() {
-    if (ConsentHelper.getInstance(this).canRequestAds() && 
-        RemoteConfig.is_load_banner_all) {
+fun loadBanner(
+    context: Activity, 
+    strAds: String, 
+    strNameId: String, 
+    remoteConfig: Boolean, 
+    rlBanner: ViewGroup, 
+    include: ViewGroup, 
+    showAds: () -> Unit, 
+    hideAds: () -> Unit
+) {
+    // Bước 1: Kiểm tra điều kiện cần thiết
+    if (isNetworkAvailable(context) && 
+        remoteConfig && 
+        ConsentHelper.getInstance(context).canRequestAds()) {
         
+        // Bước 2: Hiển thị container banner
+        showAds.invoke()
+
+        // Bước 3: Tạo config cho BannerPlugin
         val config = BannerPlugin.Config()
-        config.defaultAdUnitId = RemoteConfig.banner_all
+        // config.defaultBannerType = BannerPlugin.BannerType.CollapsibleBottom
         config.defaultBannerType = BannerPlugin.BannerType.Adaptive
-        
-        Admob.getInstance().loadBannerPlugin(
-            this,
-            binding.rlBanner,
-            binding.include as ViewGroup,
-            config
-        )
-        binding.loBanner.visibility = View.VISIBLE
+
+        // Bước 4: Kiểm tra có config ads không
+        if (Admob.getInstance().getAdItem(strNameId)?.ids?.isNotEmpty() == true) {
+            // Trường hợp A: Load từ config
+            Admob.getInstance().loadBannerPluginFromConfig(
+                context, 
+                rlBanner, 
+                include, 
+                strNameId, 
+                config
+            )
+        } else {
+            // Trường hợp B: Load với ad unit ID trực tiếp
+            config.defaultAdUnitId = strAds
+            Admob.getInstance().loadBannerPlugin(
+                context, 
+                rlBanner, 
+                include, 
+                config
+            )
+        }
+    } else {
+        // Bước 5: Ẩn container nếu không thỏa mãn điều kiện
+        hideAds.invoke()
     }
 }
 ```
 📖 **Giải thích:**
-- `ConsentHelper.canRequestAds()`: **Kiểm tra xem người dùng đã đồng ý GDPR hay chưa.**
-- `RemoteConfig.is_load_banner_all`: **Biến điều khiển việc hiển thị Banner Ads, được cấu hình từ xa (Remote Config).**
-- `BannerPlugin.Config()`: **Đối tượng cấu hình cho Banner Ads.**
-    - `defaultAdUnitId`: **ID quảng cáo banner được lấy từ file `ads_id.xml`.**
-    - `defaultBannerType`: **Loại banner — ví dụ `Adaptive` (tự co giãn theo kích thước màn hình).**
-- `loadBannerPlugin(...)`: **Hàm tải và chèn banner vào layout.**
-- `binding.loBanner.visibility = View.VISIBLE`: **Hiển thị khu vực banner sau khi tải quảng cáo thành công.**
+- `context: Activity` — **Context của Activity hiện tại.**  
+  Dùng để load quảng cáo và inflate view chứa banner.  
+  ⚠️ Yêu cầu **Activity context**, không dùng **Application context** vì cần gắn với vòng đời UI.
+
+- `strAds: String` — **Ad unit ID trực tiếp của banner ad.**  
+  Dùng làm **fallback** khi không có config từ server.  
+  Ví dụ: `RemoteConfig.banner`, `RemoteConfig.banner_splash`.
+
+- `strNameId: String` — **Key trong config để tra cứu ad unit ID.**  
+  Dùng để load quảng cáo từ **config đã fetch**.  
+  Ví dụ: `"banner"`, `"banner_splash"`.
+
+- `remoteConfig: Boolean` — **Flag điều khiển hiển thị banner từ Remote Config.**  
+  Dùng để kiểm tra **điều kiện bật/tắt quảng cáo**.  
+  Ví dụ: `RemoteConfig.is_load_banner`, `RemoteConfig.is_load_banner_splash`.
+
+- `rlBanner: ViewGroup` — **Container chính chứa banner ad.**  
+  Thường là `RelativeLayout` hoặc `FrameLayout`.  
+  Cho phép **ẩn/hiện toàn bộ vùng quảng cáo** tùy trạng thái.
+
+- `include: ViewGroup` — **View con bên trong container**, nơi banner được gắn vào.  
+  Thường là view được **include từ layout XML**.  
+  Banner sẽ được **add trực tiếp vào view này** sau khi load thành công.
+
+- `showAds: () -> Unit` — **Callback hiển thị banner** khi quảng cáo load thành công.  
+  Thường gọi:  
+  - `binding.rlBanner.show()`  
+  - hoặc `binding.rlBanner.visibility = View.VISIBLE`.
+
+- `hideAds: () -> Unit` — **Callback ẩn banner** khi quảng cáo load thất bại hoặc bị tắt.  
+  Thường gọi:  
+  - `binding.rlBanner.hide()`  
+  - hoặc `binding.rlBanner.visibility = View.GONE`.
 
 ---
 
