@@ -482,32 +482,91 @@ HOẶC
 
 **Code:**
 ```kotlin
-private fun loadNativeAds() {
-    Admob.getInstance().loadNativeAd(
-        this,
-        RemoteConfig.native_home,
-        object : NativeCallback() {
-            override fun onNativeAdLoaded(nativeAd: NativeAd?) {
-                val adView = LayoutInflater.from(this@YourActivity)
-                    .inflate(R.layout.native_ads_layout, null) as NativeAdView
-                binding.nativeAdsContainer.removeAllViews()
-                binding.nativeAdsContainer.addView(adView)
-                Admob.getInstance().pushAdsToViewCustom(nativeAd, adView)
-            }
+private fun loadNative() {
+    // Bước 1: Kiểm tra các điều kiện cần thiết trước khi load Native Ad
+    if (isNetworkAvailable(this) && 
+        RemoteConfig.is_load_native_uninstall && 
+        ConsentHelper.getInstance(this).canRequestAds()) {
+        
+        // Bước 2: Hiển thị container Native Ad (có thể là ViewGroup chứa ad)
+        binding.nativeAds.show()
 
-            override fun onAdFailedToLoad() {
-                binding.nativeAdsContainer.visibility = View.GONE
-            }
+        // Bước 3: Kiểm tra xem có config ads sẵn có không
+        if (Admob.getInstance().getAdItem("native_uninstall")?.ids?.isNotEmpty() == true) {
+            // Trường hợp A: Load Native Ad từ config (ưu tiên)
+            Admob.getInstance().loadNativeAdFromConfig(
+                this, 
+                "native_uninstall", 
+                object : NativeCallback() {
+                    // Callback khi Native Ad được load thành công
+                    override fun onNativeAdLoaded(nativeAd: NativeAd) {
+                        super.onNativeAdLoaded(nativeAd)
+                        // Gọi hàm hiển thị Native Ad lên UI
+                        showNativeAd(nativeAd)
+                    }
+
+                    // Callback khi người dùng click vào Native Ad
+                    override fun onAdClick() {
+                        super.onAdClick()
+                        // Reload Native Ad mới sau khi click để luôn có ad sẵn sàng
+                        loadNative()
+                    }
+                }
+            )
+        } else {
+            // Trường hợp B: Load Native Ad với ad unit ID trực tiếp (fallback)
+            Admob.getInstance().loadNativeAd(
+                this, 
+                RemoteConfig.native_uninstall, 
+                object : NativeCallback() {
+                    override fun onNativeAdLoaded(nativeAd: NativeAd) {
+                        super.onNativeAdLoaded(nativeAd)
+                        showNativeAd(nativeAd)
+                    }
+
+                    override fun onAdClick() {
+                        super.onAdClick()
+                        // Reload để có ad mới sẵn sàng
+                        loadNative()
+                    }
+                }
+            )
         }
-    )
+    } else {
+        // Bước 4: Nếu không thỏa mãn điều kiện, ẩn container Native Ad
+        binding.nativeAds.hide()
+    }
+}
+
+private fun showNativeAd(nativeAd: NativeAd) {
+    val layout = if (isFullAdsAdmob()) R.layout.native_ads_below_button_bottom_full else R.layout.native_ads_below_button
+    val adView = LayoutInflater.from(this@UninstallActivity).inflate(layout, null) as NativeAdView?
+    binding.nativeAds.removeAllViews()
+    binding.nativeAds.addView(adView)
+    Admob.getInstance().pushAdsToViewCustom(nativeAd, adView)
 }
 ```
 📖 **Giải thích:**
-- **Mục đích:** Tạo `FrameLayout` để làm container chứa quảng cáo **Native Ads**.
-- **Khi load thành công:**
-    - Inflate layout `native_ads_layout`.
-    - Gắn quảng cáo vào `NativeAdView` thông qua hàm `pushAdsToViewCustom()`.
-- **Khi load thất bại:** Ẩn `container` để tránh chiếm không gian trống trong giao diện.
+
+Điều kiện `if` đảm bảo chỉ load quảng cáo **khi đủ 3 yếu tố hợp lệ**:
+
+1. **`isNetworkAvailable(this)`**  
+   - Kiểm tra **thiết bị có kết nối mạng** hay không.  
+   - Nếu **không có Internet**, quảng cáo **không thể tải từ AdMob**.  
+   - Thường được cài qua `ConnectivityManager` để kiểm tra trạng thái mạng.
+
+2. **`RemoteConfig.is_load_native_uninstall`**  
+   - Là **flag điều khiển từ Firebase Remote Config**.  
+   - Dùng để **bật/tắt quảng cáo Native** ở màn hình **uninstall** mà **không cần cập nhật app**.  
+   - Các flag tương tự:  
+     - `is_load_native_home` → quảng cáo ở màn hình Home  
+     - `is_load_native_fullscreen` → quảng cáo Native toàn màn hình, v.v.
+
+3. **`ConsentHelper.getInstance(this).canRequestAds()`**  
+   - Kiểm tra **người dùng đã đồng ý (consent)** hiển thị quảng cáo hay chưa.  
+   - Tuân thủ quy định **GDPR (EU)** và **CCPA (Mỹ)** về quyền riêng tư.  
+   - Chỉ **load quảng cáo khi có sự đồng ý** của người dùng, đảm bảo app hợp lệ khi phân phối quốc tế.
+
 
 **Preload Pattern (Tối ưu):**
 ```kotlin
