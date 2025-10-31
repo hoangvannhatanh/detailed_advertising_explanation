@@ -570,26 +570,76 @@ private fun showNativeAd(nativeAd: NativeAd) {
 
 **Preload Pattern (Tối ưu):**
 ```kotlin
-// Singleton để cache native ads
-object AdsNativeConfig {
-    var mNativeAdHome: NativeAd? = null
-    
-    fun loadNativeHome(context: Context) {
-        if (mNativeAdHome == null) {
-            Admob.getInstance().loadNativeAd(context, RemoteConfig.native_home, callback)
-        }
-    }
+fun loadNativeIntro1(context: Context) {
+   if (mNativeIntro1 != null) return
+   if (!ConsentHelper.getInstance(context).canRequestAds() ||
+      !isNetworkAvailable(context) ||
+      !RemoteConfig.is_load_native_intro1
+   ) return
+
+   val hasConfig = Admob.getInstance().getAdItem("native_intro1")?.ids?.isNotEmpty() == true
+
+   val callback = object : NativeCallback() {
+      override fun onAdClick() {
+         super.onAdClick()
+         callBackLoadNative?.callBackLoadNative()
+      }
+
+      override fun onNativeAdLoaded(nativeAd: NativeAd?) {
+         mNativeIntro1 = nativeAd
+      }
+
+      override fun onAdFailedToLoad() {
+         super.onAdFailedToLoad()
+         mNativeIntro1 = null
+      }
+
+      override fun onAdImpression() {
+         super.onAdImpression()
+         mNativeIntro1 = null
+      }
+   }
+
+   if (hasConfig) {
+      Admob.getInstance().loadNativeAdFromConfig(context, "native_intro1", callback)
+   } else {
+      Admob.getInstance().loadNativeAd(context, RemoteConfig.native_intro1, callback)
+   }
 }
 
-// Preload sớm trong Application
-AdsNativeConfig.loadNativeHome(this)
 
-// Show khi cần
-AdsNativeConfig.showNativeHome(this, binding.nativeAdsContainer)
+if (isNetworkAvailable(this) &&
+   RemoteConfig.is_load_native_intro1 &&
+   AdsNativeConfig.mNativeIntro1 == null &&
+   ConsentHelper.getInstance(this).canRequestAds()) {
+   AdsNativeConfig.loadNativeIntro1(this)
+}
+
+
+if (AdsNativeConfig.mNativeIntro1 != null) {
+   showNativeAd(AdsNativeConfig.mNativeIntro1)
+}
+
+private fun showNativeAd(nativeAd: NativeAd) {
+   val layout = if (isFullAdsAdmob()) R.layout.native_ads_below_button_bottom_full else R.layout.native_ads_below_button
+   val adView = LayoutInflater.from(this@UninstallActivity).inflate(layout, null) as NativeAdView?
+   binding.nativeAds.removeAllViews()
+   binding.nativeAds.addView(adView)
+   Admob.getInstance().pushAdsToViewCustom(nativeAd, adView)
+}
 ```
 📖 **Giải thích:**
-- **Cơ chế preload:** Giúp quảng cáo được **tải sẵn trước**, nhờ đó có thể hiển thị **ngay lập tức** khi cần mà không phải chờ tải.
-- **Dạng Singleton:** Đảm bảo quảng cáo chỉ được **load một lần duy nhất** cho toàn bộ ứng dụng, tránh tải lại nhiều lần gây lãng phí tài nguyên.
+- **`loadNativeIntro1()`**:  
+  - Hàm **preload quảng cáo Native** để sẵn sàng hiển thị ngay khi cần, giúp giảm độ trễ khi mở màn hình.
+- **Kiểm tra điều kiện và xử lý callback**:  
+  - Xác định xem có đủ điều kiện hiển thị quảng cáo (mạng, consent, RemoteConfig, v.v.)  
+  - Callback được gọi khi **quảng cáo load thành công** hoặc **thất bại**, cho phép xử lý logic tiếp theo.
+- **Hiển thị Native Ad với layout động**:  
+  - Tùy biến giao diện hiển thị quảng cáo dựa trên trạng thái (đã load hay chưa).  
+  - Giúp quảng cáo hòa nhập tự nhiên với nội dung app.
+- **`pushAdsToViewCustom()`**:  
+  - Hàm **bind nội dung quảng cáo vào layout** (ví dụ: ảnh, tiêu đề, mô tả, CTA).  
+  - Đảm bảo quảng cáo được gắn đúng định dạng và hiển thị đúng vị trí trong `NativeAdView`.
 
 ---
 
