@@ -206,6 +206,14 @@ class MyApplication : AdsApplication() {
 - `getListTestDeviceId()`: **Hàm override trả về danh sách thiết bị test (ở ví dụ này là `null`).**
 - `getIntentOpenNotification()`: **Hàm override trả về `Intent` được gọi khi người dùng mở app từ thông báo.**
 
+- **`getAdItem("open_all").ids[0]`**:  
+  - Lấy **ad unit ID đầu tiên** trong danh sách ID thuộc nhóm `"open_all"`.  
+  - Mỗi nhóm quảng cáo (open, inter, native, banner, …) có thể chứa nhiều ID dự phòng.
+- **`setAppResumeAdId()`**:  
+  - Gán **ad unit ID** cho **App Open Manager** để quản lý việc hiển thị quảng cáo khi người dùng mở hoặc quay lại ứng dụng.
+- **Mục đích:**  
+  - ID này sẽ được **sử dụng để load App Open Ad**, đảm bảo hệ thống biết chính xác quảng cáo nào cần hiển thị khi app resume.
+
 
 ### BƯỚC 5: Cấu hình Remote Config
 
