@@ -50,11 +50,12 @@ implementation 'com.facebook.shimmer:shimmer:x.x.x'
 
 ## 📚 MỤC LỤC
 
-- [📘 Giới thiệu](#-giới-thiệu)
-- [⚙️ Cài đặt](#️-cài-đặt)
-  - [Bước 1 – Cấu hình build.gradle (root)](#bước-1--cấu-hình-buildgradle-root)
-  - [Bước 2 – Cấu hình AndroidManifest.xml](#bước-2--cấu-hình-androidmanifestxml)
-  - [Bước 3 – Tạo file ads_id.xml](#bước-3--tạo-file-ads_idxml)
+- [📌 TỔNG QUAN](#-tổng-quan)
+- [📚 MỤC LỤC](#-mục-lục)
+- [🚀 CÁC BƯỚC TÍCH HỢP](#️-cài-đặt)
+  - [BƯỚC 1: Cấu hình build.gradle (Root)](#bước-1--cấu-hình-buildgradle-root)
+  - [BƯỚC 2: Cấu hình AndroidManifest.xml](#bước-2--cấu-hình-androidmanifestxml)
+  - [BƯỚC 3: Tạo file ads_id.xml](#bước-3--tạo-file-ads_idxml)
   - [Bước 4 – Tạo Application Class](#bước-4--tạo-application-class)
   - [Bước 5 – Cấu hình Remote Config](#bước-5--cấu-hình-remote-config)
   - [Bước 6 – Xin Consent (GDPR)](#bước-6--xin-consent-gdpr)
@@ -68,11 +69,8 @@ implementation 'com.facebook.shimmer:shimmer:x.x.x'
 - [⚠️ Lưu ý quan trọng](#️-lưu-ý-quan-trọng)
 - [🎯 Checklist trước khi release](#-checklist-trước-khi-release)
 - [📊 Cấu trúc dự án](#-cấu-trúc-dự-án)
-- [📞 Tài liệu tham khảo](#-tài-liệu-tham-khảo)
-- [🚨 Troubleshooting (Xử lý lỗi nhanh)](#-troubleshooting-xử-lý-lỗi-nhanh)
+- [🚨 TROUBLESHOOTING NHANH](#-troubleshooting-xử-lý-lỗi-nhanh)
 - [🏁 Kết luận](#-kết-luận)
-- [👨‍💻 About the Author](#-about-the-author)
-- [📄 License](#-license)
 
 
 ---
